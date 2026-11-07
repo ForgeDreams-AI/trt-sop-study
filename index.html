@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Technical Rescue Test Prep — PFD SOPs 204.08–204.13</title>
+<title>Technical Rescue Technician Entrance Exam — Study Prep</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #141414; color: #f2f2f2; min-height: 100vh; }
@@ -45,6 +45,7 @@
   .opt:disabled { cursor: default; opacity: 1; }
   .whybox { background: #232323; border-left: 4px solid #c00; border-radius: 8px; padding: 14px; margin-top: 6px; }
   .whybox p { font-size: 15px; line-height: 1.5; }
+  .whybox.flagged { border-left-color: #ffeb3b; background: #2e2a16; }
   .whybox .cite { font-size: 13px; color: #ff9a9a; margin-top: 8px; font-weight: 700; }
   .score { font-size: 26px; font-weight: 800; margin: 12px 0 4px; }
   .missed-item { background: #232323; border-radius: 10px; padding: 14px; margin-top: 12px; }
@@ -56,7 +57,7 @@
 </head>
 <body>
 <header>
-  <h1>Technical Rescue — Written Test Prep</h1>
+  <h1>Technical Rescue Technician Entrance Exam</h1>
   <p>Phoenix Fire Department SOPs, Volume 2 &middot; MPs 204.08&ndash;204.13 &middot; Revised 01/2026<br>Confined Space &middot; Trench &middot; Mountain &middot; Water &middot; Structural Collapse &middot; Tree Rescue</p>
 </header>
 <main>
@@ -65,6 +66,11 @@
     <h2>Sit the mock, or drill one MP</h2>
     <p class="note">The real test is 100 questions from these six MPs. The mock below is 100 questions, mixed across all six — same length as the real thing.</p>
     <div class="grid" style="margin-top:14px;">
+      <button class="card mock" id="exam-card" type="button">
+        <div class="num">THE ACTUAL ENTRANCE EXAM</div>
+        <div class="title">Entrance Exam — the real questions</div>
+        <div class="count">47 of the 50 exam questions, with the answer key — flags where the key and the MP disagree</div>
+      </button>
       <button class="card mock" id="mock-card" type="button">
         <div class="num">MOCK TEST &middot; LIKE THE REAL THING</div>
         <div class="title">100-Question Mock Test</div>
@@ -118,6 +124,7 @@
 <footer>Questions written from PFD SOP Volume II, MPs 204.08&ndash;204.13 (Revised 01/2026). Study aid only — not an official department test. When in doubt, the SOP itself is the answer.</footer>
 
 <script src="questions.js"></script>
+<script src="exam-questions.js"></script>
 <script>
   var QS = TRT_QUESTIONS;
   var MPS = [
@@ -150,6 +157,9 @@
     b.onclick = function () { openSetup({ type: 'mp', mp: m.n, title: 'MP ' + m.n + ' — ' + m.title, limits: [10, 18] }); };
     mpGrid.appendChild(b);
   });
+  document.getElementById('exam-card').onclick = function () {
+    openSetup({ type: 'exam', title: 'Technical Rescue Technician Entrance Exam — the real exam questions', limits: [47] });
+  };
   document.getElementById('mix-card').onclick = function () {
     openSetup({ type: 'mix', title: 'All MPs mixed', limits: [25, 50, 100] });
   };
@@ -161,10 +171,11 @@
   var scope = null, limit = 25, pool = [];
   function openSetup(s) {
     scope = s;
-    pool = s.type === 'mp' ? QS.filter(function (q) { return q.mp === s.mp; }) : QS.slice();
-    document.getElementById('setup-scope').textContent = s.type === 'mock' ? 'Mock test' : (s.type === 'mix' ? 'Mix' : 'MP ' + s.mp);
+    pool = s.type === 'mp' ? QS.filter(function (q) { return q.mp === s.mp; })
+         : s.type === 'exam' ? EXAM_QUESTIONS.slice() : QS.slice();
+    document.getElementById('setup-scope').textContent = s.type === 'mock' ? 'Mock test' : (s.type === 'mix' ? 'Mix' : (s.type === 'exam' ? 'Entrance exam' : 'MP ' + s.mp));
     document.getElementById('setup-title').textContent = s.title;
-    document.getElementById('setup-pool').textContent = pool.length + ' questions in this pool.';
+    document.getElementById('setup-pool').textContent = pool.length + ' questions in this pool.' + (s.type === 'exam' ? ' Questions 1\u20133 were not in the photos yet.' : '');
     var row = document.getElementById('limrow');
     row.innerHTML = '';
     row.style.gridTemplateColumns = 'repeat(' + s.limits.length + ', 1fr)';
@@ -202,9 +213,9 @@
   document.getElementById('start-btn').onclick = function () {
     order = shuffle(pool.slice()).slice(0, Math.min(limit, pool.length)).map(function (q) {
       // Shuffle the options for this run; track the new correct index.
-      var idxs = shuffle([0, 1, 2, 3]);
+      var idxs = shuffle(q.opts.map(function (_, i) { return i; }));
       return {
-        q: q.q, mp: q.mp, topic: q.topic, why: q.why, cite: q.cite,
+        q: q.q, mp: q.mp, topic: q.topic, why: q.why, cite: q.cite, n: q.n, flag: !!q.flag,
         opts: idxs.map(function (i) { return q.opts[i]; }),
         answer: idxs.indexOf(q.answer)
       };
@@ -217,9 +228,9 @@
   function renderQ() {
     var item = order[idx];
     document.getElementById('quiz-progress').textContent =
-      (scope.type === 'mock' ? 'Mock test — ' : '') + 'Question ' + (idx + 1) + ' of ' + order.length;
+      (scope.type === 'mock' ? 'Mock test — ' : scope.type === 'exam' ? 'Entrance Exam — ' : '') + 'Question ' + (idx + 1) + ' of ' + order.length;
     document.getElementById('quiz-bar').style.width = (idx / order.length * 100) + '%';
-    document.getElementById('quiz-meta').textContent = 'MP ' + item.mp + ' · ' + item.topic;
+    document.getElementById('quiz-meta').textContent = (item.n ? 'Exam Q' + item.n + ' · ' : '') + 'MP ' + item.mp + ' · ' + item.topic;
     document.getElementById('quiz-q').textContent = item.q;
     var wrap = document.getElementById('quiz-opts');
     wrap.innerHTML = '';
@@ -230,6 +241,7 @@
       wrap.appendChild(b);
     });
     document.getElementById('quiz-why').classList.add('hidden');
+    document.getElementById('quiz-why').classList.remove('flagged');
   }
 
   function answerQ(i, btn) {
@@ -246,6 +258,7 @@
     }
     document.getElementById('quiz-why-text').textContent = item.why;
     document.getElementById('quiz-cite').textContent = item.cite;
+    if (item.flag) { document.getElementById('quiz-why').classList.add('flagged'); }
     document.getElementById('quiz-why').classList.remove('hidden');
     document.getElementById('btn-next').textContent = idx + 1 >= order.length ? 'See results' : 'Next';
     document.getElementById('quiz-why').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
