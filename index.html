@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Technical Rescue Test Prep — PFD SOPs 204.08–204.13</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #141414; color: #f2f2f2; min-height: 100vh; }
+  header { background: #8b0000; padding: 20px 16px 16px; }
+  header h1 { font-size: 22px; line-height: 1.25; }
+  header p { font-size: 14px; opacity: .9; margin-top: 6px; line-height: 1.45; }
+  main { max-width: 720px; margin: 0 auto; padding: 16px 16px 48px; }
+  .hidden { display: none !important; }
+  h2 { font-size: 18px; margin: 20px 0 10px; }
+  .note { font-size: 14px; color: #bbb; line-height: 1.5; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+  .card { display: block; width: 100%; text-align: left; background: #232323; border: 2px solid #3a3a3a; border-radius: 12px; padding: 16px; color: #f2f2f2; cursor: pointer; font-family: inherit; }
+  .card:active { border-color: #c00; }
+  .card .num { font-size: 13px; font-weight: 800; color: #ff6b6b; letter-spacing: .04em; }
+  .card .title { font-size: 17px; font-weight: 700; margin: 4px 0; line-height: 1.3; }
+  .card .count { font-size: 13px; color: #bbb; }
+  .card.mock { grid-column: 1 / -1; background: #8b0000; border-color: #c00; }
+  .card.mock .num { color: #ffd2d2; }
+  .card.mock .title { font-size: 19px; }
+  .card.mock .count { color: #ffd2d2; }
+  .card.mix { grid-column: 1 / -1; }
+  .scope { font-size: 13px; font-weight: 800; color: #ff6b6b; letter-spacing: .05em; text-transform: uppercase; }
+  .limrow { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .lim { background: #232323; border: 2px solid #3a3a3a; color: #f2f2f2; border-radius: 10px; padding: 14px 0; font-size: 18px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .lim.sel { background: #8b0000; border-color: #c00; }
+  .btn { display: block; width: 100%; border: none; border-radius: 10px; padding: 16px; font-size: 17px; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 14px; }
+  .btn-red { background: #c00; color: #fff; }
+  .btn-light { background: #333; color: #f2f2f2; }
+  .btn-green { background: #1e7d32; color: #fff; }
+  .progress { font-size: 14px; color: #bbb; margin-bottom: 6px; }
+  .bar { height: 8px; background: #333; border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
+  .bar > div { height: 100%; background: #c00; width: 0%; }
+  .qmeta { font-size: 13px; font-weight: 800; color: #ff6b6b; letter-spacing: .04em; margin-bottom: 8px; }
+  .qtext { font-size: 19px; line-height: 1.45; margin-bottom: 16px; }
+  .opt { display: block; width: 100%; text-align: left; background: #232323; border: 2px solid #3a3a3a; border-radius: 10px; padding: 15px 14px; font-size: 16px; line-height: 1.4; color: #f2f2f2; cursor: pointer; font-family: inherit; margin-bottom: 10px; }
+  .opt.correct { background: #1e7d32; border-color: #4caf50; }
+  .opt.wrong { background: #7d1e1e; border-color: #e53935; }
+  .opt:disabled { cursor: default; opacity: 1; }
+  .whybox { background: #232323; border-left: 4px solid #c00; border-radius: 8px; padding: 14px; margin-top: 6px; }
+  .whybox p { font-size: 15px; line-height: 1.5; }
+  .whybox .cite { font-size: 13px; color: #ff9a9a; margin-top: 8px; font-weight: 700; }
+  .score { font-size: 26px; font-weight: 800; margin: 12px 0 4px; }
+  .missed-item { background: #232323; border-radius: 10px; padding: 14px; margin-top: 12px; }
+  .missed-item .mq { font-size: 15px; font-weight: 700; line-height: 1.4; }
+  .missed-item .ma { font-size: 14px; line-height: 1.5; margin-top: 8px; color: #c8e6c9; }
+  .missed-item .mw { font-size: 14px; line-height: 1.5; margin-top: 6px; color: #bbb; }
+  footer { text-align: center; color: #888; font-size: 12px; line-height: 1.5; padding: 0 16px 28px; max-width: 720px; margin: 0 auto; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Technical Rescue — Written Test Prep</h1>
+  <p>Phoenix Fire Department SOPs, Volume 2 &middot; MPs 204.08&ndash;204.13 &middot; Revised 01/2026<br>Confined Space &middot; Trench &middot; Mountain &middot; Water &middot; Structural Collapse &middot; Tree Rescue</p>
+</header>
+<main>
+  <!-- HOME -->
+  <section id="view-home">
+    <h2>Sit the mock, or drill one MP</h2>
+    <p class="note">The real test is 100 questions from these six MPs. The mock below is 100 questions, mixed across all six — same length as the real thing.</p>
+    <div class="grid" style="margin-top:14px;">
+      <button class="card mock" id="mock-card" type="button">
+        <div class="num">MOCK TEST &middot; LIKE THE REAL THING</div>
+        <div class="title">100-Question Mock Test</div>
+        <div class="count">100 questions, mixed across all six MPs, shuffled</div>
+      </button>
+      <button class="card mix" id="mix-card" type="button">
+        <div class="num">MIX</div>
+        <div class="title">All MPs mixed</div>
+        <div class="count">108 questions across 6 MPs</div>
+      </button>
+      <div id="mp-grid" style="display:contents;"></div>
+    </div>
+  </section>
+
+  <!-- SETUP -->
+  <section id="view-setup" class="hidden">
+    <p class="scope" id="setup-scope"></p>
+    <h2 id="setup-title"></h2>
+    <p class="note" id="setup-pool"></p>
+    <p style="font-weight:700; margin:16px 0 0;">How many questions?</p>
+    <div class="limrow" id="limrow"></div>
+    <p class="note" id="setup-cap" style="margin-top:10px;"></p>
+    <button class="btn btn-red" id="start-btn" type="button">Start quiz</button>
+    <button class="btn btn-light" id="setup-back" type="button">Back</button>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="view-quiz" class="hidden">
+    <p class="progress" id="quiz-progress"></p>
+    <div class="bar"><div id="quiz-bar"></div></div>
+    <p class="qmeta" id="quiz-meta"></p>
+    <p class="qtext" id="quiz-q"></p>
+    <div id="quiz-opts"></div>
+    <div id="quiz-why" class="whybox hidden">
+      <p id="quiz-why-text"></p>
+      <p class="cite" id="quiz-cite"></p>
+      <button class="btn btn-red" id="btn-next" type="button">Next</button>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="view-results" class="hidden">
+    <h2>Done!</h2>
+    <p class="score" id="res-score"></p>
+    <p class="note" id="res-sub"></p>
+    <div id="res-missed"></div>
+    <button class="btn btn-red" id="btn-restart" type="button">Restart (same quiz, reshuffled)</button>
+    <button class="btn btn-light" id="btn-home" type="button">Back to home</button>
+  </section>
+</main>
+<footer>Questions written from PFD SOP Volume II, MPs 204.08&ndash;204.13 (Revised 01/2026). Study aid only — not an official department test. When in doubt, the SOP itself is the answer.</footer>
+
+<script src="questions.js"></script>
+<script>
+  var QS = TRT_QUESTIONS;
+  var MPS = [
+    { n: "204.08", title: "Confined Space Rescue", blurb: "Permits, air monitoring, SABA/SCBA, retrieval systems" },
+    { n: "204.09", title: "Trench Rescue Operations", blurb: "Shoring, safe zones, spoil pile, dirt removal" },
+    { n: "204.10", title: "Mountain Rescue Operations", blurb: "Rope rescue, technical vs non-technical, helicopters" },
+    { n: "204.11", title: "Water Rescue Operations", blurb: "Talk-Reach-Throw-Wade-Helo-Row-Go, Car 957" },
+    { n: "204.12", title: "Structural Collapse Rescue", blurb: "AZ-TF1, Building Triage, search and rescue teams" },
+    { n: "204.13", title: "Tree Rescue Operations", blurb: "Self-rescue, aerial platform, ground ladders, climb" }
+  ];
+  function countFor(mp) { return QS.filter(function (q) { return q.mp === mp; }).length; }
+
+  var home = document.getElementById('view-home');
+  var setup = document.getElementById('view-setup');
+  var quiz = document.getElementById('view-quiz');
+  var results = document.getElementById('view-results');
+  function show(el) {
+    [home, setup, quiz, results].forEach(function (v) { v.classList.add('hidden'); });
+    el.classList.remove('hidden');
+    window.scrollTo(0, 0);
+  }
+
+  // Home grid: MP cards.
+  var mpGrid = document.getElementById('mp-grid');
+  MPS.forEach(function (m) {
+    var b = document.createElement('button');
+    b.className = 'card'; b.type = 'button';
+    b.innerHTML = '<div class="num">MP ' + m.n + '</div><div class="title">' + m.title + '</div>' +
+      '<div class="count">' + countFor(m.n) + ' questions &middot; ' + m.blurb + '</div>';
+    b.onclick = function () { openSetup({ type: 'mp', mp: m.n, title: 'MP ' + m.n + ' — ' + m.title, limits: [10, 18] }); };
+    mpGrid.appendChild(b);
+  });
+  document.getElementById('mix-card').onclick = function () {
+    openSetup({ type: 'mix', title: 'All MPs mixed', limits: [25, 50, 100] });
+  };
+  document.getElementById('mock-card').onclick = function () {
+    openSetup({ type: 'mock', title: '100-Question Mock Test', limits: [100] });
+  };
+
+  // Setup state
+  var scope = null, limit = 25, pool = [];
+  function openSetup(s) {
+    scope = s;
+    pool = s.type === 'mp' ? QS.filter(function (q) { return q.mp === s.mp; }) : QS.slice();
+    document.getElementById('setup-scope').textContent = s.type === 'mock' ? 'Mock test' : (s.type === 'mix' ? 'Mix' : 'MP ' + s.mp);
+    document.getElementById('setup-title').textContent = s.title;
+    document.getElementById('setup-pool').textContent = pool.length + ' questions in this pool.';
+    var row = document.getElementById('limrow');
+    row.innerHTML = '';
+    row.style.gridTemplateColumns = 'repeat(' + s.limits.length + ', 1fr)';
+    s.limits.forEach(function (n) {
+      var b = document.createElement('button');
+      b.className = 'lim'; b.type = 'button'; b.textContent = n;
+      b.onclick = function () { setLimit(n); };
+      b.dataset.n = n;
+      row.appendChild(b);
+    });
+    setLimit(s.limits[s.limits.length - 1]);
+    show(setup);
+  }
+  function setLimit(n) {
+    limit = n;
+    Array.prototype.forEach.call(document.querySelectorAll('#limrow .lim'), function (b) {
+      b.classList.toggle('sel', parseInt(b.dataset.n, 10) === n);
+    });
+    var eff = Math.min(n, pool.length);
+    document.getElementById('setup-cap').textContent =
+      pool.length < n ? (pool.length + ' questions available — you\u2019ll get all ' + pool.length + '.')
+                      : ('You\u2019ll get ' + eff + ' questions, shuffled.');
+  }
+  document.getElementById('setup-back').onclick = function () { show(home); };
+
+  // Quiz state
+  var order = [], idx = 0, correct = 0, missed = [];
+  function shuffle(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+  document.getElementById('start-btn').onclick = function () {
+    order = shuffle(pool.slice()).slice(0, Math.min(limit, pool.length)).map(function (q) {
+      // Shuffle the options for this run; track the new correct index.
+      var idxs = shuffle([0, 1, 2, 3]);
+      return {
+        q: q.q, mp: q.mp, topic: q.topic, why: q.why, cite: q.cite,
+        opts: idxs.map(function (i) { return q.opts[i]; }),
+        answer: idxs.indexOf(q.answer)
+      };
+    });
+    idx = 0; correct = 0; missed = [];
+    renderQ();
+    show(quiz);
+  };
+
+  function renderQ() {
+    var item = order[idx];
+    document.getElementById('quiz-progress').textContent =
+      (scope.type === 'mock' ? 'Mock test — ' : '') + 'Question ' + (idx + 1) + ' of ' + order.length;
+    document.getElementById('quiz-bar').style.width = (idx / order.length * 100) + '%';
+    document.getElementById('quiz-meta').textContent = 'MP ' + item.mp + ' · ' + item.topic;
+    document.getElementById('quiz-q').textContent = item.q;
+    var wrap = document.getElementById('quiz-opts');
+    wrap.innerHTML = '';
+    item.opts.forEach(function (opt, i) {
+      var b = document.createElement('button');
+      b.className = 'opt'; b.type = 'button'; b.textContent = opt;
+      b.onclick = function () { answerQ(i, b); };
+      wrap.appendChild(b);
+    });
+    document.getElementById('quiz-why').classList.add('hidden');
+  }
+
+  function answerQ(i, btn) {
+    var item = order[idx];
+    var btns = document.querySelectorAll('#quiz-opts .opt');
+    btns.forEach(function (b) { b.disabled = true; });
+    if (i === item.answer) {
+      correct++;
+      btn.classList.add('correct');
+    } else {
+      btn.classList.add('wrong');
+      btns[item.answer].classList.add('correct');
+      missed.push(item);
+    }
+    document.getElementById('quiz-why-text').textContent = item.why;
+    document.getElementById('quiz-cite').textContent = item.cite;
+    document.getElementById('quiz-why').classList.remove('hidden');
+    document.getElementById('btn-next').textContent = idx + 1 >= order.length ? 'See results' : 'Next';
+    document.getElementById('quiz-why').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  document.getElementById('btn-next').onclick = function () {
+    idx++;
+    if (idx >= order.length) { showResults(); } else { renderQ(); }
+  };
+
+  function showResults() {
+    document.getElementById('quiz-bar').style.width = '100%';
+    document.getElementById('res-score').textContent = correct + ' of ' + order.length + ' correct';
+    var pct = Math.round(correct / order.length * 100);
+    document.getElementById('res-sub').textContent = missed.length === 0
+      ? 'Clean run — nice work.'
+      : pct + '% — review the ones you missed below.';
+    var wrap = document.getElementById('res-missed');
+    wrap.innerHTML = '';
+    missed.forEach(function (item) {
+      var d = document.createElement('div');
+      d.className = 'missed-item';
+      var q = document.createElement('p'); q.className = 'mq'; q.textContent = item.q;
+      var a = document.createElement('p'); a.className = 'ma'; a.textContent = 'Answer: ' + item.opts[item.answer];
+      var w = document.createElement('p'); w.className = 'mw'; w.textContent = item.why + ' (' + item.cite + ')';
+      d.appendChild(q); d.appendChild(a); d.appendChild(w);
+      wrap.appendChild(d);
+    });
+    show(results);
+  }
+  document.getElementById('btn-restart').onclick = function () {
+    document.getElementById('start-btn').click();
+  };
+  document.getElementById('btn-home').onclick = function () { show(home); };
+</script>
+</body>
+</html>
