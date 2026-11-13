@@ -53,6 +53,30 @@
   .missed-item .ma { font-size: 14px; line-height: 1.5; margin-top: 8px; color: #c8e6c9; }
   .missed-item .mw { font-size: 14px; line-height: 1.5; margin-top: 6px; color: #bbb; }
   footer { text-align: center; color: #888; font-size: 12px; line-height: 1.5; padding: 0 16px 28px; max-width: 720px; margin: 0 auto; }
+  /* study guides — tap-to-open reading */
+  details.guide { background: #232323; border: 2px solid #3a3a3a; border-radius: 12px; padding: 14px 16px; margin-top: 10px; }
+  details.guide summary { cursor: pointer; font-size: 16px; font-weight: 700; line-height: 1.35; list-style: none; }
+  details.guide summary::-webkit-details-marker { display: none; }
+  details.guide summary .num { font-size: 13px; font-weight: 800; color: #ff6b6b; letter-spacing: .04em; display: block; margin-bottom: 2px; }
+  details.guide > p { font-size: 14px; color: #bbb; line-height: 1.55; margin: 12px 0; }
+  details.guide ul { margin: 0 0 4px 18px; }
+  details.guide li { font-size: 15px; line-height: 1.5; margin-bottom: 9px; }
+  /* flashcards */
+  .frow { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 16px; }
+  .fpill { background: #232323; border: 2px solid #3a3a3a; color: #f2f2f2; border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .fpill.sel { background: #8b0000; border-color: #c00; }
+  .fcard { cursor: pointer; }
+  .fcard-inner { display: grid; transition: transform .35s; transform-style: preserve-3d; }
+  .fcard.flipped .fcard-inner { transform: rotateY(180deg); }
+  .fcard-face { grid-area: 1 / 1; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: #232323; border: 2px solid #3a3a3a; border-radius: 12px; padding: 18px; }
+  .fcard-back { transform: rotateY(180deg); border-color: #c00; }
+  .fcard-face .fmeta { font-size: 13px; font-weight: 800; color: #ff6b6b; letter-spacing: .04em; margin-bottom: 10px; }
+  .fcard-face .ftext { font-size: 19px; line-height: 1.45; }
+  .fcard-face .fanswer { font-size: 18px; line-height: 1.45; font-weight: 700; color: #c8e6c9; margin-bottom: 12px; }
+  .fcard-face .fwhy { font-size: 15px; line-height: 1.5; color: #f2f2f2; }
+  .fcard-face .fcite { font-size: 13px; color: #ff9a9a; margin-top: 10px; font-weight: 700; }
+  .fcard-face .ftap { font-size: 13px; color: #888; margin-top: 14px; }
+  .fcrow { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
 </style>
 </head>
 <body>
@@ -81,8 +105,17 @@
         <div class="title">All MPs mixed</div>
         <div class="count">108 questions across 6 MPs</div>
       </button>
+      <button class="card mix" id="cards-card" type="button">
+        <div class="num">NO MULTIPLE CHOICE</div>
+        <div class="title">Flashcards</div>
+        <div class="count">108 cards from the same question bank — tap to flip, mark what you know</div>
+      </button>
       <div id="mp-grid" style="display:contents;"></div>
     </div>
+
+    <h2>Read first — the MP in plain English</h2>
+    <p class="note">Short on the six MPs before you start quizzing. Tap one open — every point comes straight from the SOP text.</p>
+    <div id="guides-list"></div>
   </section>
 
   <!-- SETUP -->
@@ -111,6 +144,20 @@
     </div>
   </section>
 
+  <!-- FLASHCARDS -->
+  <section id="view-cards" class="hidden">
+    <p class="scope">FLASHCARDS</p>
+    <h2>Know it cold</h2>
+    <p class="note">Tap the card to flip it. Mark Know or Don&rsquo;t know and it moves on — the count tracks what you&rsquo;ve got down in this set.</p>
+    <div class="frow" id="fc-filters"></div>
+    <p class="progress" id="fc-progress"></p>
+    <div id="fc-wrap"></div>
+    <div class="fcrow">
+      <button class="btn btn-light" id="fc-shuffle" type="button" style="margin-top:0;">Shuffle</button>
+      <button class="btn btn-light" id="fc-back" type="button" style="margin-top:0;">Back to home</button>
+    </div>
+  </section>
+
   <!-- RESULTS -->
   <section id="view-results" class="hidden">
     <h2>Done!</h2>
@@ -125,6 +172,7 @@
 
 <script src="questions.js"></script>
 <script src="exam-questions.js"></script>
+<script src="study-guides.js"></script>
 <script>
   var QS = TRT_QUESTIONS;
   var MPS = [
@@ -141,8 +189,9 @@
   var setup = document.getElementById('view-setup');
   var quiz = document.getElementById('view-quiz');
   var results = document.getElementById('view-results');
+  var cards = document.getElementById('view-cards');
   function show(el) {
-    [home, setup, quiz, results].forEach(function (v) { v.classList.add('hidden'); });
+    [home, setup, quiz, results, cards].forEach(function (v) { v.classList.add('hidden'); });
     el.classList.remove('hidden');
     window.scrollTo(0, 0);
   }
@@ -166,6 +215,110 @@
   document.getElementById('mock-card').onclick = function () {
     openSetup({ type: 'mock', title: '100-Question Mock Test', limits: [100] });
   };
+  document.getElementById('cards-card').onclick = function () { openCards(); };
+
+  // Home: study guides — tap-to-open reading, rendered from study-guides.js.
+  var guidesList = document.getElementById('guides-list');
+  TRT_GUIDES.forEach(function (g) {
+    var d = document.createElement('details');
+    d.className = 'guide';
+    var s = document.createElement('summary');
+    s.innerHTML = '<span class="num">MP ' + g.mp + '</span>' + g.title;
+    d.appendChild(s);
+    var intro = document.createElement('p');
+    intro.textContent = g.intro;
+    d.appendChild(intro);
+    var ul = document.createElement('ul');
+    g.points.forEach(function (p) {
+      var li = document.createElement('li');
+      li.textContent = p;
+      ul.appendChild(li);
+    });
+    d.appendChild(ul);
+    guidesList.appendChild(d);
+  });
+
+  // Flashcards — same 108-question bank, no multiple choice.
+  var fcFilter = 'All', fcDeck = [], fcIdx = 0, fcKnown = {};
+  var fcFilters = document.getElementById('fc-filters');
+  ['All'].concat(MPS.map(function (m) { return m.n; })).forEach(function (f) {
+    var b = document.createElement('button');
+    b.className = 'fpill'; b.type = 'button';
+    b.textContent = f === 'All' ? 'All MPs' : 'MP ' + f;
+    b.onclick = function () { fcFilter = f; fcBuild(); };
+    b.dataset.f = f;
+    fcFilters.appendChild(b);
+  });
+  function fcBuild() {
+    fcDeck = QS.map(function (q, i) { return i; })
+      .filter(function (i) { return fcFilter === 'All' || QS[i].mp === fcFilter; });
+    shuffle(fcDeck);
+    fcIdx = 0;
+    Array.prototype.forEach.call(document.querySelectorAll('#fc-filters .fpill'), function (b) {
+      b.classList.toggle('sel', b.dataset.f === fcFilter);
+    });
+    renderCard();
+  }
+  function fcKnownCount() {
+    return fcDeck.filter(function (i) { return fcKnown[i]; }).length;
+  }
+  function renderCard() {
+    var wrap = document.getElementById('fc-wrap');
+    wrap.innerHTML = '';
+    document.getElementById('fc-progress').textContent =
+      fcIdx >= fcDeck.length
+        ? 'Done — known ' + fcKnownCount() + ' of ' + fcDeck.length + ' in this set.'
+        : 'Card ' + (fcIdx + 1) + ' of ' + fcDeck.length + ' · Known ' + fcKnownCount() + ' of ' + fcDeck.length;
+    if (fcIdx >= fcDeck.length) {
+      var done = document.createElement('div');
+      done.className = 'missed-item';
+      var t = document.createElement('p'); t.className = 'mq';
+      t.textContent = fcKnownCount() === fcDeck.length
+        ? 'Clean sweep — you know every card in this set.'
+        : 'Set complete. Shuffle to run it again, or tap Don\u2019t know cards again next round.';
+      done.appendChild(t);
+      wrap.appendChild(done);
+      return;
+    }
+    var item = QS[fcDeck[fcIdx]];
+    var card = document.createElement('div');
+    card.className = 'fcard';
+    var inner = document.createElement('div');
+    inner.className = 'fcard-inner';
+    var front = document.createElement('div');
+    front.className = 'fcard-face';
+    front.innerHTML = '<div class="fmeta">MP ' + item.mp + ' · ' + item.topic + '</div>' +
+      '<div class="ftext"></div><div class="ftap">Tap to flip</div>';
+    front.querySelector('.ftext').textContent = item.q;
+    var back = document.createElement('div');
+    back.className = 'fcard-face fcard-back';
+    back.innerHTML = '<div class="fmeta">ANSWER</div>' +
+      '<div class="fanswer"></div><div class="fwhy"></div><div class="fcite"></div><div class="ftap">Tap to flip back</div>';
+    back.querySelector('.fanswer').textContent = item.opts[item.answer];
+    back.querySelector('.fwhy').textContent = item.why;
+    back.querySelector('.fcite').textContent = item.cite;
+    inner.appendChild(front);
+    inner.appendChild(back);
+    card.appendChild(inner);
+    card.onclick = function () { card.classList.toggle('flipped'); };
+    wrap.appendChild(card);
+    var row = document.createElement('div');
+    row.className = 'fcrow';
+    var know = document.createElement('button');
+    know.className = 'btn btn-green'; know.type = 'button'; know.style.marginTop = '0';
+    know.textContent = 'Know it';
+    know.onclick = function () { fcKnown[fcDeck[fcIdx]] = true; fcIdx++; renderCard(); };
+    var dont = document.createElement('button');
+    dont.className = 'btn btn-red'; dont.type = 'button'; dont.style.marginTop = '0';
+    dont.textContent = 'Don\u2019t know';
+    dont.onclick = function () { delete fcKnown[fcDeck[fcIdx]]; fcIdx++; renderCard(); };
+    row.appendChild(dont);
+    row.appendChild(know);
+    wrap.appendChild(row);
+  }
+  function openCards() { fcBuild(); show(cards); }
+  document.getElementById('fc-shuffle').onclick = function () { fcBuild(); };
+  document.getElementById('fc-back').onclick = function () { show(home); };
 
   // Setup state
   var scope = null, limit = 25, pool = [];
